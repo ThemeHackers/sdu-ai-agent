@@ -1,0 +1,10 @@
+google-genai
+python-dotenv
+pyyaml
+pandas
+chromadb
+streamlit>=1.40.0
+tiktoken
+pypdf
+python-docx
+openpyxl

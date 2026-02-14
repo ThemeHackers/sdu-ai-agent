@@ -1,0 +1,12 @@
+# Python & Streamlit
+__pycache__/
+*.pyc
+.env
+.venv
+venv/
+.streamlit/
+*.log
+.DS_Store
+
+# Data
+data/chroma_db_v3/
