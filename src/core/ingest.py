@@ -24,7 +24,7 @@ def get_file_hash(file_path: str) -> str:
 def clean_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
-def recursive_split_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list:
+def recursive_split_text(text: str, chunk_size: int = 600, overlap: int = 150) -> list:
     separators = ["\n\n", "\n", ". ", " ", ""]
     
     final_chunks = []
@@ -114,14 +114,15 @@ def ingest(data_dir: str = "data/processed", collection_name: str = "sdu_knowled
     from src.core.brain import SmartBrain
     
     brain = SmartBrain(collection_name)
-    if not brain.client:
-        print("API Key Missing")
+    if not brain.ef:
+        print("Embedding Function Missing (Check API Key or Ollama Connection)")
         return
 
-    collection = brain.chroma_client.get_or_create_collection(
-        name=collection_name, 
-        embedding_function=brain.ef
-    )
+    # Use the collection initialized by SmartBrain
+    collection = brain.collection
+    if not collection:
+        print("Failed to initialize collection.")
+        return
     
     existing_docs = collection.get(include=["metadatas"])
     existing_files_map = {}

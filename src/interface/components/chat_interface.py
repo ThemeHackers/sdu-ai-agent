@@ -50,7 +50,7 @@ def handle_user_input(brain):
                 </div>
                 """, unsafe_allow_html=True)
 
-            guard = SafetyGuardrails()
+            guard = SafetyGuardrails(brain=brain)
             is_jailbreak, risk_msg = guard.check_jailbreak(prompt)
             
             if is_jailbreak:
