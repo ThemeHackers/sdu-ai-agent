@@ -115,8 +115,13 @@ def create_live_test_cases(queries: list[str], brain) -> list[dict]:
     Run queries through SmartBrain and build test cases for evaluation.
     (Does NOT produce reference_answers or relevant_ids — those require human labels.)
     """
+    import time
     test_cases = []
-    for query in queries:
+    for i, query in enumerate(queries):
+        if i > 0:
+            print("Sleeping for 30s to avoid rate limits...")
+            time.sleep(30)
+            
         candidates = brain.retrieve(query, top_k=10)
         reranked = brain.rerank(query, candidates, top_n=5)
         context = [c["text"] for c in reranked]
@@ -124,7 +129,9 @@ def create_live_test_cases(queries: list[str], brain) -> list[dict]:
             f"[ข้อมูลจาก: {c['metadata'].get('source', 'Unknown')}]\n{c['text']}"
             for c in reranked
         )
-        result = brain.think(query, context_str)
+        # Consume the generator to get full text
+        response_gen = brain.think(query, context_str)
+        full_response = "".join(list(response_gen))
 
         test_cases.append({
             "query": query,
@@ -132,7 +139,7 @@ def create_live_test_cases(queries: list[str], brain) -> list[dict]:
             "relevant_ids": [],
             "retrieved_ids": [f"{c['metadata'].get('source', 'Unknown')}_{c['metadata'].get('chunk_id', 0)}" for c in reranked],
             "context_chunks": context,
-            "generated_answer": result["text"] if isinstance(result, dict) else result,
+            "generated_answer": full_response,
         })
     return test_cases
 
