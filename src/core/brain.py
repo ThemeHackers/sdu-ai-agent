@@ -24,7 +24,6 @@ class GoogleGenAIEmbeddingFunction(EmbeddingFunction):
                 )
                 embeddings.append(response.embeddings[0].values)
             except Exception as e:
-                print(f"Embedding failed: {e}")
                 embeddings.append([0.0]*3072)
         return embeddings
 
@@ -54,10 +53,6 @@ class SmartBrain:
             self.collection = None
 
     def expand_query(self, query: str) -> str:
-        """
-        Uses Gemini to expand the user's short query into a more detailed search query.
-        This improves retrieval accuracy significantly.
-        """
         if not self.client: return query
         
         system_prompt = """
@@ -79,7 +74,6 @@ class SmartBrain:
                 config={'temperature': 0.3}
             )
             expanded = response.text.strip()
-          
             return expanded
         except Exception:
             return query
@@ -111,10 +105,6 @@ class SmartBrain:
             return []
 
     def rerank(self, query: str, candidates: list, top_n: int = 5) -> list:
-
-
-
-
         fragments = ""
         for i, cand in enumerate(candidates):
             fragments += f"[{i}]: {cand['text'][:500]}\n---\n"
@@ -145,16 +135,11 @@ class SmartBrain:
             indices = [int(idx.strip()) for idx in order_text.split(",") if idx.strip().isdigit()]
             
             reranked = []
+            seen_indices = set()
             for idx in indices:
-                if 0 <= idx < len(candidates):
+                if 0 <= idx < len(candidates) and idx not in seen_indices:
                     reranked.append(candidates[idx])
-            
-
-            if len(reranked) < top_n:
-                for cand in candidates:
-                    if cand not in reranked:
-                        reranked.append(cand)
-                    if len(reranked) >= top_n: break
+                    seen_indices.add(idx)
             
             return reranked[:top_n]
         except Exception as e:
@@ -162,10 +147,6 @@ class SmartBrain:
             return candidates[:top_n]
 
     def think(self, query: str, context: str, history: list = None):
-        """
-        Generates a streaming response from Gemini.
-        Returns a generator object that yields chunks of text.
-        """
         if not self.client:
             yield "System Error: API Key missing."
             return

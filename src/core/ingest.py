@@ -15,7 +15,6 @@ load_dotenv()
 SUPPORTED_EXTENSIONS = [".md", ".pdf", ".txt", ".csv", ".docx", ".xlsx", ".json"]
 
 def get_file_hash(file_path: str) -> str:
-    """Calculate MD5 hash of a file."""
     hash_md5 = hashlib.md5()
     with open(file_path, "rb") as f:
         for chunk in iter(lambda: f.read(4096), b""):
@@ -23,11 +22,9 @@ def get_file_hash(file_path: str) -> str:
     return hash_md5.hexdigest()
 
 def clean_text(text: str) -> str:
-    """Clean extra whitespaces."""
     return re.sub(r'\s+', ' ', text).strip()
 
 def recursive_split_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list:
-    """Split text recursively by separators."""
     separators = ["\n\n", "\n", ". ", " ", ""]
     
     final_chunks = []
@@ -36,7 +33,6 @@ def recursive_split_text(text: str, chunk_size: int = 1000, overlap: int = 200) 
         
     for sep in separators:
         if sep == "":
-            # Fallback to character splitting
             splits = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size-overlap)]
             return splits
             
@@ -55,7 +51,6 @@ def recursive_split_text(text: str, chunk_size: int = 1000, overlap: int = 200) 
             if current_chunk:
                 new_splits.append(current_chunk)
                 
-            # Check if any chunk is still too big
             result = []
             for ns in new_splits:
                 if len(ns) > chunk_size:
@@ -67,10 +62,6 @@ def recursive_split_text(text: str, chunk_size: int = 1000, overlap: int = 200) 
     return [text]
 
 def extract_content(file_path: str) -> list:
-    """
-    Extract content with metadata.
-    Returns: List of dicts, e.g., [{"text": "...", "metadata": {"page": 1}}]
-    """
     ext = os.path.splitext(file_path)[1].lower()
     results = []
 
@@ -127,15 +118,13 @@ def ingest(data_dir: str = "data/processed", collection_name: str = "sdu_knowled
         print("API Key Missing")
         return
 
-    # Use get_or_create to keep existing data
     collection = brain.chroma_client.get_or_create_collection(
         name=collection_name, 
         embedding_function=brain.ef
     )
     
-    # 1. Get existing file hashes from metadata
     existing_docs = collection.get(include=["metadatas"])
-    existing_files_map = {} # filename -> hash
+    existing_files_map = {}
     
     if existing_docs["ids"]:
         for meta in existing_docs["metadatas"]:
@@ -159,7 +148,6 @@ def ingest(data_dir: str = "data/processed", collection_name: str = "sdu_knowled
         filename = os.path.basename(file_path)
         current_hash = get_file_hash(file_path)
         
-        # Check if file exists and hash matches
         if filename in existing_files_map:
             if existing_files_map[filename] == current_hash:
                 print(f"  [SKIP] {filename} (No changes)")
@@ -167,12 +155,10 @@ def ingest(data_dir: str = "data/processed", collection_name: str = "sdu_knowled
                 continue
             else:
                 print(f"  [UPDATE] {filename} (Changed)")
-                # Delete old chunks for this file
                 collection.delete(where={"source": filename})
         else:
             print(f"  [NEW] {filename}")
 
-        # Extract content
         contents = extract_content(file_path)
         
         file_chunks_count = 0
@@ -180,12 +166,10 @@ def ingest(data_dir: str = "data/processed", collection_name: str = "sdu_knowled
             raw_text = item["text"]
             base_meta = item["metadata"]
             
-            # Recursive Chunking
             chunks = recursive_split_text(raw_text)
             
             for i, chunk in enumerate(chunks):
                 chunk_id = f"{filename}_{base_meta.get('page', '')}_{base_meta.get('sheet', '')}_{i}"
-                # Clean ID
                 chunk_id = re.sub(r'[^a-zA-Z0-9_-]', '_', chunk_id)
                 
                 meta = {
