@@ -72,40 +72,33 @@ def handle_user_input(brain):
                 ])
                 
                 update_thinking("Generating Helpful Response...")
-                response_data = brain.think(prompt, context, history=st.session_state.messages[:-1])
                 
-                if isinstance(response_data, dict):
-                    full_response = response_data.get("text", "")
-                    usage = response_data.get("usage", {})
-                else:
-                    full_response = str(response_data)
-                    usage = {}
+                full_response = ""
+                response_generator = brain.think(prompt, context, history=st.session_state.messages[:-1])
+                
+                thinking_placeholder.empty()
+                message_placeholder = st.empty()
+                
+                for chunk in response_generator:
+                    full_response += chunk
+                    message_placeholder.markdown(full_response + "▌")
+                    time.sleep(0.005) 
+                
+                message_placeholder.markdown(full_response)
                 
             except Exception as e:
                 full_response = f"Error: {str(e)}"
-                usage = {}
+                st.error(full_response)
             finally:
                 thinking_placeholder.empty()
 
             is_safe, safety_msg = guard.validate_output(full_response)
             if not is_safe:
-                full_response = f"Response blocked by safety policy ({safety_msg})."
+                blocked_msg = f"Response blocked by safety policy ({safety_msg})."
+                message_placeholder.markdown(blocked_msg)
+                full_response = blocked_msg
 
-            displayed_response = ""
-            for word in full_response.split():
-                displayed_response += word + " "
-                thinking_placeholder.markdown(displayed_response + "▌")
-                time.sleep(0.01)
-            thinking_placeholder.markdown(full_response)
-
-            if usage:
-                st.markdown(f"""
-                <div style="display: flex; gap: 12px; margin-top: 8px; font-size: 0.8rem; color: #9AA0A6;">
-                    <span>📥 Input: {usage.get('prompt_token_count', 0)}</span>
-                    <span>📤 Output: {usage.get('candidates_token_count', 0)}</span>
-                    <span>📊 Total: {usage.get('total_token_count', 0)}</span>
-                </div>
-                """, unsafe_allow_html=True)
+            
             
             if reranked_candidates and is_safe: 
                 st.markdown("###### Sources")

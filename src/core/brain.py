@@ -53,13 +53,46 @@ class SmartBrain:
         except Exception:
             self.collection = None
 
+    def expand_query(self, query: str) -> str:
+        """
+        Uses Gemini to expand the user's short query into a more detailed search query.
+        This improves retrieval accuracy significantly.
+        """
+        if not self.client: return query
+        
+        system_prompt = """
+        คุณคือผู้เชี่ยวชาญด้านการค้นหาข้อมูล (Search Expert)
+        หน้าที่: แปลงคำถามสั้นๆ ของนักศึกษา ให้เป็น "คำค้นหา (Search Query)" ที่สมบูรณ์และครอบคลุมที่สุด
+        
+        ตัวอย่าง:
+        - Input: "ลงทะเบียน"
+        - Output: "ขั้นตอนการลงทะเบียนเรียน ช่วงเวลาการจองรายวิชา และเอกสารที่ต้องใช้ มหาวิทยาลัยสวนดุสิต"
+        - Input: "ค่าเทอม"
+        - Output: "อัตราค่าธรรมเนียมการศึกษา ค่าเทอมตลอดหลักสูตร สำหรับนักศึกษาปริญญาตรี"
+        
+        คำสั่ง: ตอบกลับเฉพาะ "คำค้นหาที่ขยายความแล้ว" เท่านั้น ห้ามมีคำอธิบายอื่น
+        """
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=[system_prompt, query],
+                config={'temperature': 0.3}
+            )
+            expanded = response.text.strip()
+          
+            return expanded
+        except Exception:
+            return query
+
     def retrieve(self, query: str, top_k: int = 15) -> list:
         if not self.collection:
             return []
 
+        search_query = self.expand_query(query)
+
         try:
             results = self.collection.query(
-                query_texts=[query],
+                query_texts=[search_query],
                 n_results=top_k
             )
             
@@ -128,30 +161,34 @@ class SmartBrain:
             logging.error(f"Reranking error: {e}")
             return candidates[:top_n]
 
-    def think(self, query: str, context: str, history: list = None) -> str:
+    def think(self, query: str, context: str, history: list = None):
+        """
+        Generates a streaming response from Gemini.
+        Returns a generator object that yields chunks of text.
+        """
         if not self.client:
-            return "System Error: API Key missing."
+            yield "System Error: API Key missing."
+            return
 
         if not context:
             context = "ยังไม่มีข้อมูลที่ชัดเจนในฐานความรู้ของมหาวิทยาลัยสวนดุสิตสำหรับคำถามนี้"
 
         system_instruction = """
-        คุณคือ "พี่สวนดุสิต (SDU Smart Senior)" AI ผู้ช่วยอัจฉริยะที่รอบรู้และเป็นกันเองที่สุดในมหาวิทยาลัยสวนดุสิต
-        
-        บุคลิกภาพ:
-        - สุภาพ ใจดี ทันสมัย และเชื่อถือได้
-        - แทนตัวเองว่า "พี่" หรือ "พี่สวนดุสิต"
-        - ใช้หางเสียง "ครับ/ค่ะ" ตามความเหมาะสม (เน้นครับเป็นหลักสำหรับระบบกลาง)
-        
-        เป้าหมาย:
-        - ช่วยให้คำแนะนำที่ถูกต้อง แม่นยำ และรวดเร็ว เกี่ยวกับข้อมูลมหาวิทยาลัย
-        
-        กฎเหล็ก (Strict Rules):
-        1. **จำกัดความยาว (สำคัญมาก):** ตอบกลับให้กระชับที่สุด **ต้องมีความยาวระหว่าง 100 - 250 ตัวอักษรเท่านั้น** (รวมทั้งภาษาไทยและอังกฤษ)
-        2. **ยึดตาม Context:** ตอบคำถามโดยอ้างอิงจาก [Context ข้อมูลอ้างอิง] ที่ให้มาเท่านั้น
-        3. **ห้ามเดาข้อมูลสำคัญ:** หากใน Context ไม่มีข้อมูลที่น้องถาม ให้ตอบอย่างสุภาพว่า "ขออภัยครับ พี่ยังไม่มีข้อมูลส่วนนี้ในระบบครับ"
-        4. **สรุปใจความ:** ตอบให้ตรงประเด็นทันที ไม่ต้องเกริ่นนำยืดเยื้อ
-        5. **ลงท้ายด้วยความประทับใจ:** สั้นๆ เช่น "สู้ๆ นะครับ" หรือ "ยินดีเสมอครับ"
+        คุณคือ "พี่สวนดุสิต (SDU Smart Senior)" AI รุ่นพี่ที่ปรึกษาประจำมหาวิทยาลัยสวนดุสิต
+        หน้าที่ของคุณคือการให้คำแนะนำน้องๆ นักศึกษาด้วยความถูกต้อง แม่นยำ และเป็นกันเอง
+
+        Personality & Tone:
+        - สุภาพ อ่อนโยน ขี้เล่นนิดๆ ให้รู้สึกเป็นกันเอง (ใช้สรรพนาม "พี่" กับ "น้อง")
+        - ใช้ภาษาไทยที่สละสลวย อ่านง่าย ไม่เป็นทางการจนเกินไป (Semiprofessional)
+        - แสดงความกระตือรือล้นที่จะช่วยเหลือ
+
+        Strict Guidelines:
+        1. **Context First:** ตอบคำถามโดยยึดข้อมูลจาก [Context ข้อมูลอ้างอิง] เป็นหลักเท่านั้น ห้ามมั่วข้อมูลขึ้นมาเองเด็ดขาด
+        2. **Unknown Data:** ถ้าข้อมูลใน Context ไม่เพียงพอ ให้ตอบอย่างสุภาพว่า "ขอโทษด้วยนะครับ พี่อาจจะยังไม่มีข้อมูลส่วนนี้ในระบบ น้องอาจจะลองตรวจสอบที่หน้าเว็บคณะ/หน่วยงานโดยตรงอีกทีนะครับ"
+        3. **Safety:** ห้ามตอบคำถามที่เกี่ยวกับ การเมือง, ความรุนแรง, เรื่องเพศ, หรือสิ่งผิดกฎหมาย
+        4. **Structure:** จัดรูปแบบคำตอบให้อ่านง่าย (ใช้ Bullet points, ตัวหนา) ถ้าคำตอบยาว
+
+        Goal: ทำให้น้องนักศึกษารู้สึกอุ่นใจและได้คำตอบที่ครบถ้วนที่สุด
         """
         
         messages = [
@@ -160,18 +197,8 @@ class SmartBrain:
         
         if history:
             full_history = []
-            current_tokens = 0
-            # Simple token estimation: 1 token approx 4 chars
-            # Reserve 2000 chars for system prompt + current context
-            max_history_chars = 12000 
-            
-            for h in reversed(history):
-                content_len = len(h["content"])
-                if current_tokens + content_len > max_history_chars:
-                    break
-                full_history.insert(0, {"role": h["role"], "content": h["content"]})
-                current_tokens += content_len
-                
+            for h in history[-4:]: 
+                full_history.append({"role": h["role"], "content": h["content"]})
             messages = full_history + messages
 
         try:
@@ -179,34 +206,22 @@ class SmartBrain:
                 model=self.model_name,
                 contents=[system_instruction] + [m["content"] for m in messages],
                 config={
-                    'temperature': 0.2,
-                    'max_output_tokens': 200
+                    'temperature': 0.3,
+                    'max_output_tokens': 800
                 }
             )
             
-            usage = {}
-            if response.usage_metadata:
-                usage = {
-                    "prompt_token_count": response.usage_metadata.prompt_token_count,
-                    "candidates_token_count": response.usage_metadata.candidates_token_count,
-                    "total_token_count": response.usage_metadata.total_token_count
-                }
-
-            return {
-                "text": response.text,
-                "usage": usage
-            }
+            full_text = response.text
+            chunk_size = 5
+            for i in range(0, len(full_text), chunk_size):
+                yield full_text[i:i+chunk_size]
+                
         except Exception as e:
             error_msg = str(e)
             if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-                friendly_msg = "ขออภัยครับ พลังงานพี่สวนดุสิตหมดชั่วคราว (Rate Limit Exceeded) กรุณารอสักครู่แล้วถามใหม่นะครับ"
+                yield "ขออภัยครับ พลังงานพี่สวนดุสิตหมดชั่วคราว (Rate Limit Exceeded) กรุณารอสักครู่แล้วถามใหม่นะครับ"
             else:
-                friendly_msg = f"ขออภัยครับ พี่สวนดุสิตเกิดอาการมึนงงชั่วคราว ({error_msg})"
-            
-            return {
-                "text": friendly_msg,
-                "usage": {}
-            }
+                yield f"ขออภัยครับ พี่สวนดุสิตเกิดอาการมึนงงชั่วคราว ({error_msg})"
 
 if __name__ == "__main__":
     brain = SmartBrain()
