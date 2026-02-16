@@ -1,0 +1,805 @@
+{
+  "metadata": {
+    "timestamp": "2026-02-16T09:53:59.654898",
+    "num_test_cases": 3,
+    "k": 5,
+    "run_semantic": true,
+    "elapsed_seconds": 34.26
+  },
+  "retrieval_summary": {
+    "mean_precision@k": 0.20000000000000004,
+    "mean_recall@k": 1.0,
+    "mean_f1@k": 0.3333333333333333,
+    "mean_hit_rate@k": 1.0,
+    "mean_reciprocal_rank": 1.0,
+    "mean_ndcg@k": 1.0,
+    "mean_average_precision": 1.0
+  },
+  "per_query_retrieval": [
+    {
+      "precision@k": 0.2,
+      "recall@k": 1.0,
+      "f1@k": 0.33333333333333337,
+      "hit_rate@k": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg@k": 1.0,
+      "average_precision": 1.0
+    },
+    {
+      "precision@k": 0.2,
+      "recall@k": 1.0,
+      "f1@k": 0.33333333333333337,
+      "hit_rate@k": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg@k": 1.0,
+      "average_precision": 1.0
+    },
+    {
+      "precision@k": 0.2,
+      "recall@k": 1.0,
+      "f1@k": 0.33333333333333337,
+      "hit_rate@k": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg@k": 1.0,
+      "average_precision": 1.0
+    }
+  ],
+  "per_query_semantic": [
+    {
+      "answer_relevancy": 0.7327450802515822,
+      "faithfulness_score": 1.0,
+      "mean_claim_score": 0.7749048153397644,
+      "context_relevancy": 0.659220260220182,
+      "semantic_similarity": 0.7465277439756843,
+      "composite_correctness": 0.8438
+    },
+    {
+      "answer_relevancy": 0.7220027413581577,
+      "faithfulness_score": 1.0,
+      "mean_claim_score": 0.7749048153397644,
+      "context_relevancy": 0.6534758871131198,
+      "semantic_similarity": 0.7207927238257635,
+      "composite_correctness": 0.8328
+    },
+    {
+      "answer_relevancy": 0.6967584520001955,
+      "faithfulness_score": 1.0,
+      "mean_claim_score": 0.7749048153397644,
+      "context_relevancy": 0.6339915563008083,
+      "semantic_similarity": 0.7067110832444476,
+      "composite_correctness": 0.821
+    }
+  ],
+  "statistical_analysis": {
+    "precision@k": {
+      "descriptive": {
+        "n": 3,
+        "mean": 0.2,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 0.2,
+        "min": 0.2,
+        "max": 0.2,
+        "q1": 0.2,
+        "q3": 0.2,
+        "iqr": 0.0,
+        "skewness": -2.44949,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          3,
+          0,
+          0,
+          0
+        ],
+        "frequencies": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "grade": "F"
+    },
+    "recall@k": {
+      "descriptive": {
+        "n": 3,
+        "mean": 1.0,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "q1": 1.0,
+        "q3": 1.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "grade": "A+"
+    },
+    "f1@k": {
+      "descriptive": {
+        "n": 3,
+        "mean": 0.333333,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 0.333333,
+        "min": 0.33333333333333337,
+        "max": 0.33333333333333337,
+        "q1": 0.333333,
+        "q3": 0.333333,
+        "iqr": 0.0,
+        "skewness": 2.44949,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          3,
+          0,
+          0,
+          0
+        ],
+        "frequencies": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "grade": "F"
+    },
+    "hit_rate@k": {
+      "descriptive": {
+        "n": 3,
+        "mean": 1.0,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "q1": 1.0,
+        "q3": 1.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "grade": "A+"
+    },
+    "reciprocal_rank": {
+      "descriptive": {
+        "n": 3,
+        "mean": 1.0,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "q1": 1.0,
+        "q3": 1.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "grade": "A+"
+    },
+    "ndcg@k": {
+      "descriptive": {
+        "n": 3,
+        "mean": 1.0,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "q1": 1.0,
+        "q3": 1.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "grade": "A+"
+    },
+    "average_precision": {
+      "descriptive": {
+        "n": 3,
+        "mean": 1.0,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "q1": 1.0,
+        "q3": 1.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "grade": "A+"
+    },
+    "context_relevancy": {
+      "descriptive": {
+        "n": 3,
+        "mean": 0.648896,
+        "std": 0.013223,
+        "variance": 0.000175,
+        "median": 0.653476,
+        "min": 0.6339915563008083,
+        "max": 0.659220260220182,
+        "q1": 0.643734,
+        "q3": 0.656348,
+        "iqr": 0.012614,
+        "skewness": -1.371636,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          3,
+          0
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "grade": "D"
+    },
+    "faithfulness_score": {
+      "descriptive": {
+        "n": 3,
+        "mean": 1.0,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "q1": 1.0,
+        "q3": 1.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "grade": "A+"
+    },
+    "semantic_similarity": {
+      "descriptive": {
+        "n": 3,
+        "mean": 0.724677,
+        "std": 0.020191,
+        "variance": 0.000408,
+        "median": 0.720793,
+        "min": 0.7067110832444476,
+        "max": 0.7465277439756843,
+        "q1": 0.713752,
+        "q3": 0.73366,
+        "iqr": 0.019908,
+        "skewness": 0.83371,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          3,
+          0
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "grade": "C"
+    },
+    "answer_relevancy": {
+      "descriptive": {
+        "n": 3,
+        "mean": 0.717169,
+        "std": 0.018474,
+        "variance": 0.000341,
+        "median": 0.722003,
+        "min": 0.6967584520001955,
+        "max": 0.7327450802515822,
+        "q1": 0.709381,
+        "q3": 0.727374,
+        "iqr": 0.017993,
+        "skewness": -1.096873,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          3,
+          0
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "grade": "C"
+    },
+    "mean_claim_score": {
+      "descriptive": {
+        "n": 3,
+        "mean": 0.774905,
+        "std": 0.0,
+        "variance": 0.0,
+        "median": 0.774905,
+        "min": 0.7749048153397644,
+        "max": 0.7749048153397644,
+        "q1": 0.774905,
+        "q3": 0.774905,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          3,
+          0
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "grade": "C+"
+    },
+    "composite_correctness": {
+      "descriptive": {
+        "n": 3,
+        "mean": 0.832533,
+        "std": 0.011402,
+        "variance": 0.00013,
+        "median": 0.8328,
+        "min": 0.821,
+        "max": 0.8438,
+        "q1": 0.8269,
+        "q3": 0.8383,
+        "iqr": 0.0114,
+        "skewness": -0.105184,
+        "kurtosis": 0.0
+      },
+      "distribution": {
+        "bin_edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        "frequencies": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "grade": "B"
+    }
+  },
+  "correlation_matrix": {
+    "precision@k": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "recall@k": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "f1@k": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "hit_rate@k": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "reciprocal_rank": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "ndcg@k": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "average_precision": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "context_relevancy": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 1.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 1.0,
+      "answer_relevancy": 1.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 1.0
+    },
+    "faithfulness_score": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "semantic_similarity": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 1.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 1.0,
+      "answer_relevancy": 1.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 1.0
+    },
+    "answer_relevancy": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 1.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 1.0,
+      "answer_relevancy": 1.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 1.0
+    },
+    "mean_claim_score": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 0.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 0.0,
+      "answer_relevancy": 0.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 0.0
+    },
+    "composite_correctness": {
+      "precision@k": 0.0,
+      "recall@k": 0.0,
+      "f1@k": 0.0,
+      "hit_rate@k": 0.0,
+      "reciprocal_rank": 0.0,
+      "ndcg@k": 0.0,
+      "average_precision": 0.0,
+      "context_relevancy": 1.0,
+      "faithfulness_score": 0.0,
+      "semantic_similarity": 1.0,
+      "answer_relevancy": 1.0,
+      "mean_claim_score": 0.0,
+      "composite_correctness": 1.0
+    }
+  }
+}
