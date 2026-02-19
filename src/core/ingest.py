@@ -67,36 +67,102 @@ def extract_content(file_path: str) -> list:
 
     try:
         if ext == ".pdf":
-            reader = PdfReader(file_path)
-            for i, page in enumerate(reader.pages):
-                text = page.extract_text()
-                if text:
-                    results.append({"text": text, "metadata": {"page": i + 1}})
+            try:
+                import pdfplumber
+                with pdfplumber.open(file_path) as pdf:
+                    for i, page in enumerate(pdf.pages):
+                        page_text = []
+                        
+                        
+                        tables = page.extract_tables()
+                        for table in tables:
+                            
+                            if table:
+                                
+                                cleaned_table = [[str(cell) if cell else "" for cell in row] for row in table]
+                                
+                                header = "| " + " | ".join(cleaned_table[0]) + " |"
+                                separator = "| " + " | ".join(["---"] * len(cleaned_table[0])) + " |"
+                                body = "\n".join(["| " + " | ".join(row) + " |" for row in cleaned_table[1:]])
+                                table_md = f"\n{header}\n{separator}\n{body}\n"
+                                page_text.append(table_md)
+
+                        
+                        text = page.extract_text()
+                        if text:
+                            page_text.append(text)
+                        
+                        full_page_content = "\n\n".join(page_text)
+                        if full_page_content.strip():
+                            results.append({"text": full_page_content, "metadata": {"page": i + 1}})
+            except ImportError:
+                print("pdfplumber not found, installing fallback...")
+                
+                reader = PdfReader(file_path)
+                for i, page in enumerate(reader.pages):
+                    text = page.extract_text()
+                    if text:
+                        text = re.sub(r'\n{3,}', '\n\n', text)
+                        results.append({"text": text, "metadata": {"page": i + 1}})
                     
         elif ext == ".docx":
             doc = DocxDocument(file_path)
-            full_text = "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
+            
+            full_text = "\n\n".join([p.text for p in doc.paragraphs if p.text.strip()])
             results.append({"text": full_text, "metadata": {}})
             
         elif ext == ".xlsx":
-            wb = load_workbook(file_path, read_only=True)
+            wb = load_workbook(file_path, read_only=True, data_only=True)
             for sheet_name in wb.sheetnames:
                 ws = wb[sheet_name]
+                rows = list(ws.iter_rows(values_only=True))
+                
+                if not rows:
+                    continue
+                    
+                
+                headers = [str(h) if h is not None else f"Column_{i}" for i, h in enumerate(rows[0])]
                 sheet_text = []
-                for row in ws.iter_rows(values_only=True):
-                    cells = [str(c) if c is not None else "" for c in row]
-                    sheet_text.append(" | ".join(cells))
-                results.append({"text": "\n".join(sheet_text), "metadata": {"sheet": sheet_name}})
+                
+                
+                for row_idx, row in enumerate(rows[1:], start=2):
+                  
+                    if not any(row):
+                        continue
+                        
+                    row_content = []
+                    for h, cell in zip(headers, row):
+                        if cell is not None and str(cell).strip():
+                            row_content.append(f"{h}: {cell}")
+                            
+                    
+                    if row_content:
+                        sheet_text.append(f"[Row {row_idx}] " + " | ".join(row_content))
+                
+                
+                results.append({"text": "\n\n".join(sheet_text), "metadata": {"sheet": sheet_name}})
             wb.close()
             
         elif ext == ".csv":
-            df = pd.read_csv(file_path)
-            csv_text = df.to_csv(index=False)
-            results.append({"text": csv_text, "metadata": {}})
+            df = pd.read_csv(file_path, dtype=str).fillna("")
+            
+            csv_text = []
+            for idx, row in df.iterrows():
+                row_content = []
+                for col in df.columns:
+                    val = row[col]
+                    if val and val.strip():
+                        row_content.append(f"{col}: {val}")
+                
+                if row_content:
+                    csv_text.append(f"[Row {idx+1}] " + " | ".join(row_content))
+            
+            results.append({"text": "\n\n".join(csv_text), "metadata": {}})
 
         elif ext == ".json":
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
+            
             text = json.dumps(data, ensure_ascii=False, indent=2)
             results.append({"text": text, "metadata": {}})
             
@@ -118,7 +184,7 @@ def ingest(data_dir: str = "data/processed", collection_name: str = "sdu_knowled
         print("Embedding Function Missing (Check API Key or Ollama Connection)")
         return
 
-    # Use the collection initialized by SmartBrain
+            
     collection = brain.collection
     if not collection:
         print("Failed to initialize collection.")
